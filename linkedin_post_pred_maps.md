@@ -1,19 +1,28 @@
-# LinkedIn Post — Prediction Maps
+# LinkedIn Post — Prediction Set Live Geographic Maps
+
 ---
 
-🌍 **Moving Past Scatter Plots: Bringing Spatial Data to Life!** 📍
+🗺️ **When Your Training Data Tells a Different Story on a Real Map**
 
-When working with geostatistical training sets, mapping X/Y arrays loosely onto a white chart background often strips away the most critical element: **Geographic Context**.
+I've been working with the **Swiss Jura Heavy Metals dataset** for spatial machine learning benchmarking — 259 training samples across 7 heavy metals. The numbers looked clean. The histograms looked reasonable.
 
-While prepping the classical **Swiss Jura Heavy Metals Dataset** for spatial machine learning (n=259), the basic metric `X (km) / Y (km)` grid coordinates just weren't visually cutting it. I needed to see exactly how these heavy metals aligned with real-world topography, roads, and valleys natively before training my models.
+Then I projected the data onto a **live topographic map**.
 
-So, I built a dedicated **Live Geographic Dashboard (Leaflet.js + OpenStreetMap)**! 🖥️
+Using **Leaflet.js** and a WGS84 affine transformation anchored to the Swiss Jura region, I built a 7-panel geographic dashboard — one live map per metal, overlaid on real **CARTO Dark Matter** satellite topography.
 
-I developed an affine transformation layer to mathematically project the relative Jura metric grid dynamically onto true WGS84 global Topo Tiles—mapping all 7 heavy metals side-by-side perfectly. 
+Here's what genuinely surprised me:
 
-Then came the absolute gamechanger: I installed a live **Filter Engine UI**.
-Now, utilizing an interactive switchboard, I can instantly uncheck `[Forest]` or `[Argovian Rock]`, and visually watch exactly where geochemical data clusters vanish across all 7 maps in real-time without writing new plotting code. Isolating structural geology has never been faster.
+📍 **The Cd and Pb hotspots align with specific valley corridors** — not random. Seeing them over real terrain immediately suggests hydrological transport as a likely secondary distribution mechanism, something a pure statistics table will never tell you.
 
-Before spinning up your complex Spatial Graph Neural Networks or Kriging scripts, how do you handle visualizing categorical environment layers natively on maps? 👇
+🪨 **The Geological Filter Panel changed how I reason about the data.** I can now uncheck individual rock formations — ordered **youngest → oldest** following stratigraphic literature — and watch the concentration patterns reorganise in real time across all 7 maps simultaneously.
 
-#GeoAI #DataScience #DataVisualization #SpatialAnalysis #MachineLearning #WebDevelopment #Python #Geochemistry #AIResearch
+→ Isolate Quaternary deposits (~2.58 Ma): Cd and Zn concentrations visually spike — the youngest alluvial soils accumulate more recent anthropogenic contamination.
+→ Switch to Argovian (~166 Ma, oldest): the distribution flattens, consistent with deeper geogenic background levels.
+
+🔶 **The Combined Study Area Boundary** — a convex hull of all 359 points (prediction + validation) with a +500 m offset, shown as a dashed golden polygon — immediately contextualises the survey coverage against the surrounding landscape. No GIS files required; computed entirely in pure Python.
+
+Built completely without a backend. One HTML file, Leaflet.js from CDN, raw data baked in. Open it offline and it works.
+
+What geochemical insights have you found appear only by looking at real-world spatial context? 👇
+
+#GeoAI #SpatialAnalysis #DataVisualization #MachineLearning #Leaflet #OpenStreetMap #Geochemistry #Python #DataScience

@@ -1,20 +1,43 @@
-# Geographic Maps Dashboard — Prediction Set (n=259)
+# Jura Heavy Metals — Prediction Set Live Geographic Maps
 
-This directory contains the **Geographic Map Viewer** (`prediction_maps.html`), engineered specifically for the 259-sample Swiss Jura Training subset. 
+## Overview
 
-Instead of abstract X/Y scatter plots, this newly upgraded dashboard leverages **Leaflet.js** to project and overlay your raw spatial data entirely onto live OpenStreetMap Dark topological topography (WGS84). 
+This dashboard (`index.html`) projects all 259 training-set sample locations from the Swiss Jura geochemical dataset onto **live OpenStreetMap topography** using **Leaflet.js** and a WGS84 affine coordinate transformation. It replaces abstract grid scatter plots with true geographic context, enabling spatial pattern recognition before model deployment.
 
-## 🗺️ Why a Live Map + Filter Dashboard?
+## Contents of This Folder
 
-Before training complex spatial algorithms (like GNNs or Kriging), a data scientist must understand visual spatial autocorrelation—how heavy metals cluster organically within real-world environments.
+| File | Purpose |
+|---|---|
+| `index.html` | Live geographic map dashboard (open in any browser) |
+| `gen_pred_maps.py` | Python generator script — re-run to rebuild `index.html` |
 
-### Key Capabilities
-1. **Real-World Coordinate Projection**: The old local mathematical grid (`X km`, `Y km`) is flawlessly mathematically projected onto actual Swiss lat/lon coordinates natively within your browser, allowing you to instantly compare Cobalt spikes with real-world valleys or local roadways. 
-2. **7-Grid Architecture**: Instantly compare the unique geographic concentration distributions of Cd, Cu, Pb, Co, Cr, Ni, and Zn horizontally side-by-side using responsive auto-zooming bounds.
-3. **Live Categorical Filtering**: A dedicated Control Switchboard sits atop the maps. With a simple click, you can instantly turn off points belonging to `Forests`, `Quaternary Rock`, or `Meadows` across all 7 maps simultaneously. This allows visual isolation of heavy metals specifically within localized rock formations!
+> **Note:** The CSV source data lives in `../prediction set EDA/jura_prediction_set.csv`. The generator reads both the prediction and validation CSVs to compute the shared study boundary polygon.
 
-## 🔗 Integrated Workflow
+## Dashboard Features
 
-- Click any circle marker on the map to reveal its original `Sample ID`, exact Heavy Metal `ppm` concentration, `Rock Type`, and `Land Use` string.
-- Click **"← Back to EDA"** to return automatically to your deep-dive statistics (histograms, counts, correlation matrices).
-- Click **"Validation Maps →"** to instantly contrast the training density with your strictly designated 100-sample test set.
+### 7-Map Grid Layout
+Seven independent **Leaflet.js** maps — one per heavy metal (Cd, Cu, Pb, Co, Cr, Ni, Zn) — rendered side-by-side on a dark CARTO basemap. Each map:
+- Colour-grades every sample point from **blue (low)** to **pink/red (high)** concentration
+- Auto-zooms to the tight bounding box of the data on load
+- Shows a **clickable popup** on each point with: Sample ID · Concentration (ppm) · Rock Type · Land Use · Grid coordinates
+
+### Live Categorical Filter Panel
+A persistent control bar above the maps provides instant filtering across **all 7 maps simultaneously**:
+
+**Rock Type** (ordered youngest → oldest per stratigraphic literature, with age labels):
+- Quaternary (~2.58 Ma) · Portlandian (~152 Ma) · Kimmeridgian (~157 Ma) · Sequanian (~163 Ma) · Argovian (~166 Ma)
+
+**Land Use:**
+- Forest · Pasture · Meadow · Tillage
+
+Unchecking any category sets those sample markers to fully transparent across all maps instantly.
+
+### Combined Study Area Boundary
+A toggleable **dashed golden polygon** overlaid on every map defines the combined study footprint across both the prediction and validation datasets. The boundary is computed as a **convex hull of all 359 points**, with a **+500 m outward offset** from the outermost samples. Useful for contextualising the geographic scope of the survey against real terrain features.
+
+## Coordinate Projection Method
+The raw local grid coordinates (`X km`, `Y km`) are transformed to `WGS84 (Latitude, Longitude)` using an affine approximation anchored to the Swiss Jura region (origin: Lat 47.15°, Lon 6.85°). The 1°/111.32 km conversion factor is applied with a cosine correction for longitude at the study latitude.
+
+## Navigation
+- **← Back to EDA** — Returns to the statistical analysis dashboard (`../prediction set EDA/index.html`)
+- **Validation Maps →** — Opens the equivalent live map dashboard for the 100-sample validation set
